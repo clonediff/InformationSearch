@@ -8,10 +8,8 @@ HashSet<string> ignoreTags = ["script", "style", "head", "meta", "link"];
 
 var cts = new CancellationTokenSource();
 
-string[] fileLinks = ["https://tatmedia.ru"];//await File.ReadAllLinesAsync(indexTxt, cts.Token);
-
-var links = new Queue<Uri>(fileLinks.Select(x => new Uri(x)));
-var usedLinks = new HashSet<string>(fileLinks);
+var links = new Queue<Uri>(args.Select(x => new Uri(x)));
+var usedLinks = new HashSet<string>(args);
 List<string> resPages = [];
 
 if (!Directory.Exists(pages)) Directory.CreateDirectory(pages);
