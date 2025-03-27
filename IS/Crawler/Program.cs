@@ -23,7 +23,7 @@ while (links.Count != 0 && resPages.Count < 100) {
     foreach (var anchor in GetAnchors(doc.DocumentNode, link))
     {
         if (!usedLinks.Add(anchor.ToString())) continue;
-        Console.WriteLine(anchor);
+        // Console.WriteLine(anchor);
         links.Enqueue(anchor);
     }
 
