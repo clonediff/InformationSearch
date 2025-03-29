@@ -65,7 +65,13 @@ string ExtractReadableText(HtmlNode html)
         case HtmlNodeType.Comment:
             return string.Empty;
         case HtmlNodeType.Text:
-            return html.InnerText.Trim() + '\n';
+            return html.InnerText.Trim()
+                    .Replace("&nbsp;", " ")
+                    .Replace("&ensp;", " ")
+                    .Replace("&emsp;", " ")
+                    .Replace("&ndash;", "-")
+                    .Replace("&mdash;", "–")
+                   + '\n';
         case HtmlNodeType.Document:
         case HtmlNodeType.Element:
         default:
