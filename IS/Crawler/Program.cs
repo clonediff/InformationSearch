@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Net;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
@@ -17,6 +18,7 @@ if (!Directory.Exists(pages)) Directory.CreateDirectory(pages);
 while (links.Count != 0 && resPages.Count < 100) {
     var link = links.Dequeue();
     var html = await GetHtml(link, cts.Token);
+    html = WebUtility.HtmlDecode(html);
     var doc = new HtmlDocument();
     doc.LoadHtml(html);
 
@@ -65,13 +67,7 @@ string ExtractReadableText(HtmlNode html)
         case HtmlNodeType.Comment:
             return string.Empty;
         case HtmlNodeType.Text:
-            return html.InnerText.Trim()
-                    .Replace("&nbsp;", " ")
-                    .Replace("&ensp;", " ")
-                    .Replace("&emsp;", " ")
-                    .Replace("&ndash;", "-")
-                    .Replace("&mdash;", "–")
-                   + '\n';
+            return html.InnerText.Trim() + '\n';
         case HtmlNodeType.Document:
         case HtmlNodeType.Element:
         default:
