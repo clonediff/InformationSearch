@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler", "Crawler\Crawler.csproj", "{A8591D4F-7AD7-43D2-8652-A67D42787373}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lemmatization", "Lemmatization\Lemmatization.csproj", "{99FE6A4E-4705-4534-9BEA-153A938E00F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{A8591D4F-7AD7-43D2-8652-A67D42787373}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8591D4F-7AD7-43D2-8652-A67D42787373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8591D4F-7AD7-43D2-8652-A67D42787373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99FE6A4E-4705-4534-9BEA-153A938E00F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FE6A4E-4705-4534-9BEA-153A938E00F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FE6A4E-4705-4534-9BEA-153A938E00F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FE6A4E-4705-4534-9BEA-153A938E00F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
