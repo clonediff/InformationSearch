@@ -1,4 +1,6 @@
-﻿const string TFIDFResultFile = "TFIDFResult.csv";
+﻿using System.Globalization;
+
+const string TFIDFResultFile = "TFIDFResult.csv";
 
 await Main(args);
 return;
@@ -79,5 +81,5 @@ async Task PrintTFIDF(string outputPath, List<string> docs, Dictionary<string, D
     await File.WriteAllLinesAsync(outputPath, [header]);
     await File.AppendAllLinesAsync(outputPath,
         tfidf.Select(pair => string.Join(';',
-            new[] { pair.Key }.Concat(docs.Select(d => pair.Value.GetValueOrDefault(d, 0).ToString("F5"))))));
+            new[] { pair.Key }.Concat(docs.Select(d => pair.Value.GetValueOrDefault(d, 0).ToString("F5", CultureInfo.InvariantCulture))))));
 }
