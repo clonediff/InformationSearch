@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 
+const string IDFResultFile = "IDFResult.csv";
 const string TFIDFResultFile = "TFIDFResult.csv";
 
 await Main(args);
@@ -15,6 +16,7 @@ async Task Main(string[] args)
     var invIndex = await ReadInvIndexFile(invIndexFile);
     var idf = IDF(lemmas.Count, invIndex);
     var tfidf = TFIDF(tf, idf);
+    await PrintIDF(IDFResultFile, idf);
     await PrintTFIDF(TFIDFResultFile, lemmas.Select(x => x.Key).ToList(), tfidf);
     Console.WriteLine("Done");
 }
@@ -75,11 +77,29 @@ Dictionary<string, Dictionary<string, double>> TFIDF(Dictionary<string, Dictiona
     return res;
 }
 
+async Task PrintIDF(string outputPath, Dictionary<string, double> idf)
+{
+    const string header = "Terms;IDF";
+    await File.WriteAllLinesAsync(outputPath, [header]);
+    await File.AppendAllLinesAsync(outputPath,
+        idf.OrderBy(pair => pair.Key)
+            .Select(x => $"{x.Key};{x.Value.ToString("F5", CultureInfo.InvariantCulture)}")
+    );
+}
+
 async Task PrintTFIDF(string outputPath, List<string> docs, Dictionary<string, Dictionary<string, double>> tfidf)
 {
+    docs = docs.OrderBy(d => d).ToList();
     var header = $"Terms\\Docs;{string.Join(';', docs)}";
     await File.WriteAllLinesAsync(outputPath, [header]);
     await File.AppendAllLinesAsync(outputPath,
-        tfidf.Select(pair => string.Join(';',
-            new[] { pair.Key }.Concat(docs.Select(d => pair.Value.GetValueOrDefault(d, 0).ToString("F5", CultureInfo.InvariantCulture))))));
+        tfidf
+            .OrderBy(x => x.Key)
+            .Select(pair => string.Join(';',
+                    new[] { pair.Key }.Concat(
+                        docs.Select(d => pair.Value.GetValueOrDefault(d, 0).ToString("F5", CultureInfo.InvariantCulture))
+                    )
+                )
+            )
+    );
 }
