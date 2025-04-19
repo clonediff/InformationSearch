@@ -34,7 +34,7 @@ while (true)
             results
                 .Where(kvp => !double.IsNaN(kvp.Value))
                 .OrderByDescending(x => x.Value)
-                .Select(x => $"{x.Key}\t{x.Value:F2}")));
+                .Select(x => $"{x.Key}\t{x.Value:F5}")));
 }
 
 return;
