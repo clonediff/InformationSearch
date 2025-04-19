@@ -1,37 +1,42 @@
 ﻿using System.Globalization;
 
-if (args.Length != 2) throw new ArgumentException("Not enough arguments");
+const string OutputFile = "output.txt";
+
+if (args.Length < 2) throw new ArgumentException("Not enough arguments");
 
 var idfInput = args[0];
 var idf = await ReadIdf(idfInput);
 var tfidfInput = args[1];
 var (tfidf, docs) = await ReadTfIdf(tfidfInput);
 
-var input = Console.ReadLine();
-var lemmas = Lemmatizer.Lemmatizer.Lemmatize(input ?? string.Empty);
-var clearedLemmas = await Lemmatizer.Lemmatizer.ClearLemmasAsync(lemmas);
-var knownLemmas = clearedLemmas.Where(token => tfidf.Any(pair => pair.Key == token)).ToList();
+while (true)
+{
+    var input = Console.ReadLine();
+    var lemmas = Lemmatizer.Lemmatizer.Lemmatize(input ?? string.Empty);
+    var clearedLemmas = await Lemmatizer.Lemmatizer.ClearLemmasAsync(lemmas);
+    var knownLemmas = clearedLemmas.Where(token => tfidf.Any(pair => pair.Key == token)).ToList();
 
-var queryTfIdf = knownLemmas
-    .GroupBy(lemma => lemma)
-    .ToDictionary(
-        g => g.Key, 
-        g => (double)g.Count() / knownLemmas.Count * idf[g.Key]
-    );
+    var queryTfIdf = knownLemmas
+        .GroupBy(lemma => lemma)
+        .ToDictionary(
+            g => g.Key,
+            g => (double)g.Count() / knownLemmas.Count * idf[g.Key]
+        );
 
 // [document] -> cos sim
-var results = new Dictionary<string, double>();
-foreach (var doc in docs)
-    results[doc] = CosineSimilarity(queryTfIdf, tfidf, doc);
+    var results = new Dictionary<string, double>();
+    foreach (var doc in docs)
+        results[doc] = CosineSimilarity(queryTfIdf, tfidf, doc);
 
 
-Console.WriteLine(
-    string.Join('\n', 
-        results
-            .Where(kvp => !double.IsNaN(kvp.Value))
-            .OrderByDescending(x => x.Value)
-            .Take(10)
-            .Select(x => $"{x.Key}: {x.Value:F2}")));
+    await Log(OutputFile,
+        string.Join('\n',
+            results
+                .Where(kvp => !double.IsNaN(kvp.Value))
+                .OrderByDescending(x => x.Value)
+                .Select(x => $"{x.Key}\t{x.Value:F2}")));
+}
+
 return;
 
 double CosineSimilarity(Dictionary<string, double> queryVector, Dictionary<string, Dictionary<string, double>> tfIdf, string document)
@@ -76,5 +81,8 @@ async Task<(Dictionary<string, Dictionary<string, double>> tfidf, List<string> d
     return (res, docs);
 }
 
-
-
+async Task Log(string path, string text)
+{
+    Console.WriteLine(text);
+    await File.WriteAllTextAsync(path, text);
+}
