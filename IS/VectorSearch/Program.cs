@@ -28,6 +28,7 @@ foreach (var doc in docs)
 Console.WriteLine(
     string.Join('\n', 
         results
+            .Where(kvp => !double.IsNaN(kvp.Value))
             .OrderByDescending(x => x.Value)
             .Take(10)
             .Select(x => $"{x.Key}: {x.Value:F2}")));
